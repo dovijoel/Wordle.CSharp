@@ -2,7 +2,7 @@
 
 namespace Wordle.CSharp.Backend
 {
-    public static class WordleService
+    public static partial class WordleService
     {
         public static string GetWordOfDay()
         {
@@ -13,7 +13,10 @@ namespace Wordle.CSharp.Backend
         {
             guess = guess.ToLower();
             GuessResponse response = new GuessResponse();
-            if (guess.Length == 5)
+            response.Guess = guess.ToLower();
+            response.IsValidWord = VALID_GUESSES.Contains(response.Guess) || DAILY_WORDS.Contains(response.Guess);
+            response.IsIncorrectLength = guess.Length != 5;
+            if (!response.IsIncorrectLength && response.IsValidWord)
             {
                 string wordOfTheDay = GetWordOfDay().ToLower();
 
@@ -43,9 +46,6 @@ namespace Wordle.CSharp.Backend
                     response.IsAllCorrect = response.Response.All(e => e == GuessEnumeration.CORRECT);
                 }
                 
-            } else
-            {
-                response.IsIncorrectLength = true;
             }
 
 
